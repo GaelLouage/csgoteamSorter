@@ -17,11 +17,12 @@ namespace counterstrikeWarTeamMaker.Helpers
 
         private static IJsonService _jsonService;
         public static async Task UpdateUiAsync(IJsonService jsonService, Dispatcher dispatcher, ComboBox cmbTypeOfPlayers, ListView lVPlayers, ListView lVPlayerRemover,
-            ListView lVPlayerUpdate, ComboBox cmbUpdatePlayers)
+            ListView lVPlayerUpdate, ComboBox cmbUpdatePlayers , ComboBox cmdMainTypeOfPlayers)
         {
             _jsonService = jsonService;
             UpdateComboboxPlayers(cmbTypeOfPlayers);
             UpdateComboboxPlayers(cmbUpdatePlayers);
+            //UpdateComboboxPlayers(cmdMainTypeOfPlayers);
             await ListViewUpdaterAsync(lVPlayers, lVPlayerRemover, lVPlayerUpdate);
         }
 
@@ -41,10 +42,16 @@ namespace counterstrikeWarTeamMaker.Helpers
             await UpdatePlayerListViewAsync(lVPlayersRemover);
             await UpdatePlayerListViewAsync(lVPlayersUpdate);
         }
-        public async static Task UpdateListViewOnSearchAsync(ListView lv, TextBox txtSortUpdatePlayer)
+        public async static Task UpdateListViewOnSearchAsync(ListView lv, TextBox txtSortUpdatePlayer, ComboBox? cmb = null)
         {
             lv.ItemsSource = null;
             lv.ItemsSource = (await _jsonService.GetAllPlayersAsync()).Where(x => x.Name.ToLower().Contains(txtSortUpdatePlayer.Text.ToLower()));
+            if (cmb.SelectedIndex > -1)
+            {
+                var typeOfPlayer = (TypeOfPlayer)cmb.SelectedItem;
+                lv.ItemsSource = null;
+                lv.ItemsSource = (await _jsonService.GetAllPlayersAsync()).Where(x => x.Name.ToLower().Contains(txtSortUpdatePlayer.Text.ToLower()));
+            }
         }
     }
 }

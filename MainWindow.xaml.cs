@@ -1,4 +1,5 @@
-﻿using counterstrikeWarTeamMaker.Entitites;
+﻿using counterstrikeWarTeamMaker.Dictionaries;
+using counterstrikeWarTeamMaker.Entitites;
 using counterstrikeWarTeamMaker.Enums;
 using counterstrikeWarTeamMaker.Helpers;
 using counterstrikeWarTeamMaker.Services.Classes;
@@ -27,6 +28,7 @@ namespace counterstrikeWarTeamMaker
     {
         private readonly IJsonService _jsonService;
         private Player player = new Player();
+        private List<Player> playerList = new List<Player>();
         public MainWindow(IJsonService jsonService)
         {
             _jsonService = jsonService;
@@ -40,7 +42,7 @@ namespace counterstrikeWarTeamMaker
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await UiHelper.UpdateUiAsync(_jsonService, Dispatcher, cmbTypeOfPlayers, lVPlayers, lVPlayersRemover,
-                lVPlayersUpdate, cmbTypeOfPlayersUpdate);
+                lVPlayersUpdate, cmbTypeOfPlayersUpdate, cmdMainTypeOfPlayers);
         }
         private async void btnSavePlayer_Click(object sender, RoutedEventArgs e)
         {
@@ -105,12 +107,57 @@ namespace counterstrikeWarTeamMaker
         // place in the ui updater
         private async void txtSortUpdatePlayer_TextChanged(object sender, TextChangedEventArgs e)
         {
-           await UiHelper.UpdateListViewOnSearchAsync(lVPlayersUpdate, txtSortUpdatePlayer);
+            await UiHelper.UpdateListViewOnSearchAsync(lVPlayersUpdate, txtSortUpdatePlayer);
         }
 
         private async void txtSortRemovePlayer_TextChanged(object sender, TextChangedEventArgs e)
         {
             await UiHelper.UpdateListViewOnSearchAsync(lVPlayersRemover, txtSortRemovePlayer);
+        }
+        //main input
+        private async void txtSearchPlayerMain_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //refactor this code 
+            lVPlayers.ItemsSource = null;
+            playerList = (await _jsonService.GetAllPlayersAsync()).ToList();
+            if (!string.IsNullOrEmpty(txtSearchPlayerMain.Text))
+            {
+                playerList = (await _jsonService.GetAllPlayersAsync()).Where(x => x.Name.ToLower().Contains(txtSearchPlayerMain.Text.ToLower())).ToList();
+            }
+            var sorting = cmdMainTypeOfPlayers.SelectedIndex;
+            if (sorting > -1)
+            {
+                var dictionarySorting = Dictionary.GetSortingDictionary(lVPlayers, playerList);
+                if (dictionarySorting.ContainsKey(sorting))
+                {
+                    dictionarySorting[sorting]?.Invoke();
+                }
+            } else
+            {
+                lVPlayers.ItemsSource = playerList.Where(x => x.Name.ToLower().Contains(txtSearchPlayerMain.Text.ToLower()));
+            }
+          
+           
+        }
+
+        private async void cmdMainTypeOfPlayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // refactor this code
+            playerList = (await _jsonService.GetAllPlayersAsync()).ToList();
+            if (!string.IsNullOrEmpty(txtSearchPlayerMain.Text))
+            {
+                playerList = (await _jsonService.GetAllPlayersAsync()).Where(x => x.Name.ToLower().Contains(txtSearchPlayerMain.Text.ToLower())).ToList();
+            }
+            lVPlayers.ItemsSource = null;
+            var sorting = cmdMainTypeOfPlayers.SelectedIndex;
+            if (sorting > -1)
+            {
+                var dictionarySorting = Dictionary.GetSortingDictionary(lVPlayers, playerList);
+                if (dictionarySorting.ContainsKey(sorting))
+                {
+                    dictionarySorting[sorting]?.Invoke();
+                }
+            }
         }
     }
 }

@@ -39,7 +39,16 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <!--player list-->
-                    <ListView x:Name="lVPlayers" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="10" Cursor="Hand">
+                    <StackPanel  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5"  Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBox x:Name="txtSearchPlayerMain" Width="450" Height="22"  HorizontalAlignment="center" VerticalAlignment="Top" TextChanged="txtSearchPlayerMain_TextChanged"/>
+                        <ComboBox x:Name="cmdMainTypeOfPlayers"   Width="150" Height="22" Margin="10 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Top" SelectionChanged="cmdMainTypeOfPlayers_SelectionChanged">
+                            <ComboBoxItem Content="Sort by Name A-Z"/>
+                            <ComboBoxItem Content="Sort by Skill +"/>
+                            <ComboBoxItem Content="Sort by Skill -"/>
+                        </ComboBox>
+                    </StackPanel>
+                   
+                    <ListView x:Name="lVPlayers" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="3"  Cursor="Hand" Margin="50" Width="610">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
