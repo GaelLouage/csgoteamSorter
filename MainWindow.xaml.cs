@@ -39,13 +39,13 @@ namespace counterstrikeWarTeamMaker
         }
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await UiHelper.UpdateUiAsync(_jsonService,Dispatcher, cmbTypeOfPlayers, lVPlayers, lVPlayersRemover,
+            await UiHelper.UpdateUiAsync(_jsonService, Dispatcher, cmbTypeOfPlayers, lVPlayers, lVPlayersRemover,
                 lVPlayersUpdate, cmbTypeOfPlayersUpdate);
         }
         private async void btnSavePlayer_Click(object sender, RoutedEventArgs e)
         {
-            var playerSaveValidation = ValidatoinHelper.PlayerSaveValidation(txtPlayerName, player);
-            if(!playerSaveValidation.isValid)
+            var playerSaveValidation = ValidationHelper.PlayerSaveValidation(txtPlayerName, player);
+            if (!playerSaveValidation.isValid)
             {
                 MessageBox.Show(playerSaveValidation.message?.Invoke());
                 return;
@@ -54,7 +54,7 @@ namespace counterstrikeWarTeamMaker
             await UiHelper.ListViewUpdaterAsync(lVPlayers, lVPlayersRemover, lVPlayersUpdate);
             txtPlayerName.Text = "";
         }
-        
+
         private void cmbTypeOfPlayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             player.TypeOfPlayer = (TypeOfPlayer)cmbTypeOfPlayers.SelectedItem;
@@ -62,30 +62,22 @@ namespace counterstrikeWarTeamMaker
 
         private async void btnDeletePlayer_Click(object sender, RoutedEventArgs e)
         {
-            if(lVPlayersRemover.SelectedIndex >= 0)
+            if (lVPlayersRemover.SelectedIndex >= 0)
             {
                 var player = lVPlayersRemover.SelectedItem as Player;
                 var remove = await _jsonService.RemovePlayerAsync(player);
                 MessageBox.Show(remove);
                 await UiHelper.ListViewUpdaterAsync(lVPlayers, lVPlayersRemover, lVPlayersUpdate);
+                txtSortRemovePlayer.Text = string.Empty;
             }
         }
 
         private async void btnUpdatePlayer_Click(object sender, RoutedEventArgs e)
         {
-            if (lVPlayersUpdate.SelectedIndex <= -1)
+            var validation = ValidationHelper.UpdateValidation(lVPlayersUpdate, cmbTypeOfPlayersUpdate, txtPlayerNameUpdate);
+            if (!validation.IsValid)
             {
-                MessageBox.Show("No player selected!");
-                return;
-            }
-            if(cmbTypeOfPlayersUpdate.SelectedIndex <= -1)
-            {
-                MessageBox.Show("No level selected");
-                return;
-            }
-            if (string.IsNullOrEmpty(txtPlayerNameUpdate.Text))
-            {
-                MessageBox.Show("Name is required!");
+                MessageBox.Show(validation.Message);
                 return;
             }
             var player = lVPlayersUpdate.SelectedItem as Player;
@@ -96,17 +88,29 @@ namespace counterstrikeWarTeamMaker
             lVPlayersUpdate.SelectedItem = -1;
             cmbTypeOfPlayersUpdate.SelectedIndex = -1;
             txtPlayerNameUpdate.Text = string.Empty;
+            txtSortUpdatePlayer.Text = string.Empty;
             MessageBox.Show(updatePlayer);
         }
 
         private void lVPlayersUpdate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(lVPlayersUpdate.SelectedIndex >= 0)
+            if (lVPlayersUpdate.SelectedIndex >= 0)
             {
                 var player = lVPlayersUpdate.SelectedItem as Player;
                 txtPlayerNameUpdate.Text = player.Name;
                 cmbTypeOfPlayersUpdate.SelectedItem = player.TypeOfPlayer;
             }
+        }
+
+        // place in the ui updater
+        private async void txtSortUpdatePlayer_TextChanged(object sender, TextChangedEventArgs e)
+        {
+           await UiHelper.UpdateListViewOnSearchAsync(lVPlayersUpdate, txtSortUpdatePlayer);
+        }
+
+        private async void txtSortRemovePlayer_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            await UiHelper.UpdateListViewOnSearchAsync(lVPlayersRemover, txtSortRemovePlayer);
         }
     }
 }

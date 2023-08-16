@@ -41,5 +41,10 @@ namespace counterstrikeWarTeamMaker.Helpers
             await UpdatePlayerListViewAsync(lVPlayersRemover);
             await UpdatePlayerListViewAsync(lVPlayersUpdate);
         }
+        public async static Task UpdateListViewOnSearchAsync(ListView lv, TextBox txtSortUpdatePlayer)
+        {
+            lv.ItemsSource = null;
+            lv.ItemsSource = (await _jsonService.GetAllPlayersAsync()).Where(x => x.Name.ToLower().Contains(txtSortUpdatePlayer.Text.ToLower()));
+        }
     }
 }

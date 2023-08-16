@@ -9,7 +9,7 @@ using System.Windows.Controls;
 
 namespace counterstrikeWarTeamMaker.Helpers
 {
-    public static class ValidatoinHelper
+    public static class ValidationHelper
     {
         public static (bool isValid, Func<string> message) PlayerSaveValidation(TextBox txtPlayerName, Player player)
         {
@@ -26,5 +26,23 @@ namespace counterstrikeWarTeamMaker.Helpers
             player.Name = txtPlayerName.Text;
             return (true, () => "Player is Valid!");
         }
+        public static (bool IsValid, string Message) UpdateValidation(ListView lVPlayersUpdate, ComboBox cmbTypeOfPlayersUpdate, TextBox txtPlayerNameUpdate)
+        {
+            if (lVPlayersUpdate.SelectedIndex <= -1)
+            {
+                return (false, "No player selected!");
+            }
+            if (cmbTypeOfPlayersUpdate.SelectedIndex <= -1)
+            {
+                return (false, "No level selected!");
+            }
+            if (string.IsNullOrEmpty(txtPlayerNameUpdate.Text))
+            {
+                return (false, "Name is required!");
+            }
+            return (true, "Valid");
+        }
     }
+
+
 }
