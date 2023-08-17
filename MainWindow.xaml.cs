@@ -4,6 +4,7 @@ using counterstrikeWarTeamMaker.Enums;
 using counterstrikeWarTeamMaker.Helpers;
 using counterstrikeWarTeamMaker.Services.Classes;
 using counterstrikeWarTeamMaker.Services.Interfaces;
+using counterstrikeWarTeamMaker.Singletons;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml.Linq;
 
 namespace counterstrikeWarTeamMaker
@@ -180,6 +182,7 @@ namespace counterstrikeWarTeamMaker
                 }
 
                 var selectedPlayer = lVPlayers.SelectedItem as Player;
+                if (selectedPlayer is null) return;
                 if (selectedPlayers.Any(x => x.Name == selectedPlayer.Name))
                 {
                     MessageBox.Show("Player already in list.");
@@ -200,9 +203,6 @@ namespace counterstrikeWarTeamMaker
             }
             catch { }
         }
-
-     
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             playerDeleted = true;
@@ -273,6 +273,16 @@ namespace counterstrikeWarTeamMaker
             {
                 team.Add(selectedPlayers[next]);
             }
+        }
+
+        private void btnStartMatch_Click(object sender, RoutedEventArgs e)
+        {
+     
+                TimeInstance.Instance.StartTimer();
+
+             TimeInstance.Instance.GetElapsedTime(txtTimer);
+
+   
         }
     }
 }
