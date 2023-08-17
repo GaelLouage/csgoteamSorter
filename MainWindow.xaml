@@ -47,8 +47,41 @@
                             <ComboBoxItem Content="Sort by Skill -"/>
                         </ComboBox>
                     </StackPanel>
-                   
-                    <ListView x:Name="lVPlayers" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="3"  Cursor="Hand" Margin="50" Width="610">
+                    <ListBox x:Name="lBselectedPlayers" Grid.Row="3" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="3" Cursor="Hand" HorizontalAlignment="Center" VerticalAlignment="Top" Width="175" Margin="-122 -40  0 0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                        <TextBlock  Text="{Binding Id}" Grid.Column="0"/>
+                                        <TextBlock  Text=".   "  Grid.Column="1" Margin="2"/>
+                                        <TextBlock  Text="{Binding Name}" Grid.Column="2" HorizontalAlignment="Left" Margin="2"/>
+                                        <Button Tag="{Binding Name}" Content="X" Background="Red" Foreground="White"  Click="Button_Click"  Grid.Column="3" Width="25"/>
+                                </Grid>
+                        
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button x:Name="btnCreateTeams" Content="Create Teams" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="33 60 0 0" Width="175" Click="btnCreateTeams_Click" Cursor="Hand"/>
+                    <StackPanel x:Name="stPTeams" Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="4" Grid.RowSpan="3" Grid.Column="2"  Height="380">
+                        <StackPanel>
+                            <TextBlock Text="Team CT" Background="Blue" Margin="10" Foreground="white" HorizontalAlignment="Center" Padding="50 0 55 0"/>
+                            <TextBlock x:Name="txtTeamCT"  Margin="10" Width="150"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Team T" Background="Red" Margin="10" Foreground="white" HorizontalAlignment="Center" Padding="50 0 55 0"/>
+                            <TextBlock x:Name="txtTeamT"  Margin="10" Width="150"/>
+                        </StackPanel>
+                        <Button Content="StartMatch" Margin="-340 0 50 -140" Height="22" Width="350" Cursor="Hand"/>
+                    </StackPanel>
+                    <ListView x:Name="lVPlayers" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="3"  Cursor="Hand" Margin="50" Width="610" SelectionChanged="lVPlayers_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -60,7 +93,7 @@
                                         <TextBlock Text="Level:" Margin="10"/>
                                         <TextBlock Text="{Binding TypeOfPlayer}" Margin="10"/>
                                     </StackPanel>
-                                    <Separator Width="250"/>
+                                    <Separator Width="570"/>
                                 </StackPanel>
 
                             </DataTemplate>
@@ -123,7 +156,7 @@
                             <Button x:Name="btnDeletePlayer" Content="Delete" Width="80" HorizontalAlignment="Right" Margin="10" Cursor="Hand" Click="btnDeletePlayer_Click"/>
                         </StackPanel>
                     </GroupBox>
-
+            
                     <GroupBox Header="Update Player" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Left" Margin="10" Grid.RowSpan="3" Width="740">
                         <StackPanel Margin="10">
                             <TextBox x:Name="txtSortUpdatePlayer" Margin="10" TextChanged="txtSortUpdatePlayer_TextChanged" />

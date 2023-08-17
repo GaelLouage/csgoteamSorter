@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -42,15 +43,23 @@ namespace counterstrikeWarTeamMaker.Helpers
             await UpdatePlayerListViewAsync(lVPlayersRemover);
             await UpdatePlayerListViewAsync(lVPlayersUpdate);
         }
-        public async static Task UpdateListViewOnSearchAsync(ListView lv, TextBox txtSortUpdatePlayer, ComboBox? cmb = null)
+        public async static Task UpdateListViewOnSearchAsync(ListView lv, TextBox txtSortUpdatePlayer)
         {
             lv.ItemsSource = null;
             lv.ItemsSource = (await _jsonService.GetAllPlayersAsync()).Where(x => x.Name.ToLower().Contains(txtSortUpdatePlayer.Text.ToLower()));
-            if (cmb.SelectedIndex > -1)
+        }
+
+        public static void SelectedPlayerButtonAndTeamsVisibility(List<SelectedPlayer> selectedPlayers, Button btnCreateTeams,
+           StackPanel stPTeams )
+        {
+            if (selectedPlayers.Count == 10 || selectedPlayers.Count == 12)
             {
-                var typeOfPlayer = (TypeOfPlayer)cmb.SelectedItem;
-                lv.ItemsSource = null;
-                lv.ItemsSource = (await _jsonService.GetAllPlayersAsync()).Where(x => x.Name.ToLower().Contains(txtSortUpdatePlayer.Text.ToLower()));
+                btnCreateTeams.Visibility = Visibility.Visible;
+            }
+            if (selectedPlayers.Count < 10 || (selectedPlayers.Count > 10 && selectedPlayers.Count < 12))
+            {
+                btnCreateTeams.Visibility = Visibility.Hidden;
+                stPTeams.Visibility = Visibility.Hidden;
             }
         }
     }
